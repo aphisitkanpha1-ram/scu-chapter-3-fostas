@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SCU Chapter 3 : FOSTAS</title>
+<meta name="description" content="Join SCU Chapter 3 : Foundation to Organizational Structure." />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="SCU Chapter 3 : FOSTAS" />
+<meta property="og:image" content="https://i.postimg.cc/vTsSgNGt/573066604-17940644157081337-3904262952484115085-n.jpg" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+/* --- 1. Variables --- */
+:root {
+  --sky-top: #4A90E2;
+  --sky-bottom: #A4D8F9;
+  --bg-gradient: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 60%, #EBF7FF 100%);
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.9);
+  --text-main: #102A43;
+  --text-body: #334E68;
+  --accent-color: #007AFF;
+  --shadow-card: 0 10px 30px rgba(16, 42, 67, 0.15);
+  --city-fill: #FFFFFF;
+  --city-opacity: 0.4;
+  --cursor-x: 50vw;
+  --cursor-y: 50vh;
+}
+
+body.night {
+  --bg-gradient: linear-gradient(180deg, #001A33 0%, #003366 50%, #00529B 100%);
+  --glass-bg: rgba(16, 42, 67, 0.6); 
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --text-main: #F8F9FA;
+  --text-body: #BCCCDC; 
+  --accent-color: #FFC107;
+  --shadow-card: 0 20px 50px rgba(0, 0, 0, 0.6);
+  --city-fill: #001122;
+  --city-opacity: 0.9;
+}
+
+/* --- 2. Base & Layout --- */
+html { scroll-behavior: smooth; }
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Inter', 'Sarabun', sans-serif;
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-main);
+  overflow-x: hidden;
+  line-height: 1.7;
+  transition: background 0.8s ease, color 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Background Effects */
+body::after {
+  content: ''; position: fixed; inset: 0;
+  background: radial-gradient(800px circle at var(--cursor-x) var(--cursor-y), rgba(78, 205, 196, 0.12), transparent 50%);
+  pointer-events: none; z-index: 1; mix-blend-mode: screen; 
+}
+body:not(.night)::after {
+  background: radial-gradient(800px circle at var(--cursor-x) var(--cursor-y), rgba(255, 255, 255, 0.4), transparent 60%);
+  mix-blend-mode: overlay; 
+}
+body.night::before {
+  content: ""; position: fixed; inset: 0;
+  background-image: radial-gradient(2px 2px at 100px 150px , #EEEEEE , rgba(0,0,0,0));
+  background-size: 350px 350px; opacity: 0.6; z-index: 1; pointer-events: none;
+  animation: starsTwinkle 5s infinite ease-in-out;
+}
+
+/* --- 3. UI Components --- */
+nav {
+  position: fixed; top: 25px; left: 50%; transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(20px);
+  padding: 12px 40px; border-radius: 50px; border: 1px solid var(--glass-border);
+  z-index: 90; display: flex; gap: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+nav a { text-decoration: none; font-size: 0.95rem; font-weight: 600; color: var(--text-main); opacity: 0.7; transition: all 0.3s; }
+nav a:hover { opacity: 1; color: var(--accent-color); transform: translateY(-2px); }
+
+/* Control Buttons (Theme & Music) */
+.control-btn {
+  position: fixed; right: 25px; width: 44px; height: 44px;
+  border-radius: 50%; border: 1px solid var(--glass-border); cursor: pointer;
+  background: var(--glass-bg); backdrop-filter: blur(10px); font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center; z-index: 100;
+  color: var(--text-main); transition: all 0.3s;
+}
+.control-btn:hover { transform: scale(1.1); border-color: var(--accent-color); }
+
+#theme-toggle { top: 25px; }
+#music-toggle { top: 80px; }
+#music-toggle.playing {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px rgba(0, 122, 255, 0.4);
+    animation: pulseMusic 2s infinite;
+}
+@keyframes pulseMusic {
+    0% { box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(0, 122, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 122, 255, 0); }
+}
+
+/* City Background */
+.city-bg { position: fixed; bottom: 0; left: 0; width: 150%; height: 40vh; z-index: 0; pointer-events: none; opacity: var(--city-opacity); mask-image: linear-gradient(to top, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%); }
+.city-bg svg { width: 100%; height: 100%; display: block; }
+.city-bg svg path { fill: var(--city-fill); }
+
+/* Header */
+header { text-align: center; padding: 10rem 1.5rem 6rem; position: relative; z-index: 2; max-width: 1000px; margin: 0 auto; }
+.main-logo { max-width: 70px; height: auto; margin-bottom: 25px; border-radius: 12px; }
+h1 { margin: 0; font-size: clamp(2.2rem, 5vw, 5.5rem); font-weight: 800; letter-spacing: -1px; line-height: 1.1; background: linear-gradient(135deg, #0D2B46 0%, #0056b3 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; padding-bottom: 15px; filter: drop-shadow(0 2px 10px rgba(255,255,255,0.4)); }
+body.night h1 { background: linear-gradient(135deg, #FFFFFF 0%, #4ECDC4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: none; }
+.sub-headline { font-size: clamp(0.95rem, 2vw, 1.4rem); font-weight: 500; color: var(--text-body); margin-top: 1rem; max-width: 700px; margin-left: auto; margin-right: auto; backdrop-filter: blur(4px); padding: 5px 15px; border-radius: 20px; display: inline-block; }
+body.night .sub-headline { background: transparent; }
+
+.event-info { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 2.5rem; }
+.badge { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); padding: 8px 24px; border-radius: 50px; font-size: 0.95rem; font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+body.day .badge { background: rgba(255, 255, 255, 0.85); color: var(--accent-color); }
+
+/* Common Sections */
+.container { max-width: 1000px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 2; flex: 1; }
+section { margin-bottom: 8rem; scroll-margin-top: 120px; }
+.section-title { text-align: center; font-size: clamp(1.8rem, 4vw, 2.2rem); font-weight: 800; color: var(--text-main); margin-bottom: 3.5rem; position: relative; }
+.section-title::after { content: ''; display: block; width: 80px; height: 5px; background: linear-gradient(90deg, var(--accent-color), #A4D8F9); margin: 15px auto 0; border-radius: 50px; }
+
+/* Cards */
+.card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2.5rem; box-shadow: var(--shadow-card); backdrop-filter: blur(25px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.card:hover { transform: translateY(-10px); border-color: var(--accent-color); }
+.card h3 { margin-top: 0; color: var(--accent-color); font-size: 1.5rem; }
+.card p { color: var(--text-body); font-size: 1rem; margin-bottom: 0; }
+
+.pillars-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+
+/* Recap Slider */
+.recap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+.slider-container { position: relative; width: 100%; height: 220px; overflow: hidden; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
+.slide { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.5s ease-in-out; filter: saturate(0.9); }
+.slide.active { opacity: 1; }
+.nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; z-index: 10; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: background 0.3s; }
+.nav-btn:hover { background: rgba(0, 122, 255, 0.8); }
+.nav-btn.prev { left: 10px; }
+.nav-btn.next { right: 10px; }
+.recap-stats { margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: start; }
+.stat-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(0, 122, 255, 0.1); color: var(--text-main); padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; border: 1px solid rgba(0, 122, 255, 0.2); }
+body.night .stat-badge { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); color: #fff; }
+.stat-badge i { color: var(--accent-color); }
+
+/* Timeline / Agenda */
+.timeline { max-width: 700px; margin: 0 auto; position: relative; }
+.timeline::before { content: ''; position: absolute; left: 22.5px; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, var(--accent-color), transparent); opacity: 0.3; }
+.timeline-item { display: flex; margin-bottom: 2.5rem; position: relative; gap: 30px; }
+.time-marker { min-width: 110px; padding-left: 60px; font-weight: 700; color: var(--accent-color); font-size: 1.05rem; flex-shrink: 0; }
+.time-marker::before { content: ''; position: absolute; left: 14px; top: 3px; width: 14px; height: 14px; background: var(--glass-bg); border: 3px solid var(--accent-color); border-radius: 50%; z-index: 2; box-shadow: 0 0 10px var(--accent-color); }
+.event-detail h4 { margin: 0 0 2px; font-size: 1.1rem; color: var(--text-main); line-height: 1.3; }
+.event-detail p { margin: 0; font-size: 0.95rem; color: var(--text-body); line-height: 1.5; }
+.agenda-note { font-size: 0.8rem; color: var(--text-body); opacity: 0.7; text-align: center; margin-top: 20px; font-style: italic; }
+
+/* Journey Timeline */
+.app-timeline-wrapper { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2.5rem; backdrop-filter: blur(25px); }
+.app-timeline-container { display: flex; justify-content: space-between; position: relative; gap: 20px; }
+.app-step { text-align: center; flex: 1; position: relative; z-index: 2; }
+.step-circle { width: 50px; height: 50px; background: var(--glass-bg); color: var(--accent-color); border: 2px solid var(--accent-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-weight: 800; font-size: 1.2rem; transition: all 0.3s; box-shadow: 0 0 15px rgba(0, 122, 255, 0.1); }
+.app-step.active .step-circle { background: var(--accent-color); color: #fff; box-shadow: 0 0 20px var(--accent-color); }
+.app-timeline-container::before { content: ''; position: absolute; top: 25px; left: 30px; right: 30px; height: 3px; background: rgba(164, 200, 225, 0.3); z-index: 0; }
+.step-label { font-weight: 700; color: var(--text-main); margin-bottom: 5px; font-size: 1rem; }
+.step-date { font-size: 0.85rem; color: var(--text-body); opacity: 0.8; }
+
+/* Speakers */
+.speakers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; justify-content: center; }
+.speakers-grid .speaker-card { max-width: 350px; margin: 0 auto; width: 100%; padding: 2rem; text-align: center; }
+.speaker-img-placeholder { width: 120px; height: 120px; margin: 0 auto 20px; background: linear-gradient(135deg, rgba(255,255,255,0.5), rgba(255,255,255,0.1)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; border: 2px solid var(--accent-color); box-shadow: 0 0 20px rgba(0, 122, 255, 0.2); }
+body.night .speaker-img-placeholder { background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.1)); }
+.speaker-name { font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-bottom: 5px; }
+.speaker-role { font-size: 0.9rem; color: var(--accent-color); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+/* Location */
+.location-container { display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem; align-items: center; }
+.map-frame { width: 100%; height: 300px; border-radius: 20px; border: 1px solid var(--glass-border); overflow: hidden; box-shadow: var(--shadow-card); }
+.map-frame iframe { width: 100%; height: 100%; border: 0; }
+
+/* FAQ */
+details.faq-item { margin-bottom: 1rem; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 1rem; }
+body.night details.faq-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
+summary { font-weight: 700; cursor: pointer; list-style: none; position: relative; padding-right: 30px; color: var(--text-main); transition: color 0.3s; }
+summary:hover { color: var(--accent-color); }
+summary::after { content: '+'; position: absolute; right: 0; top: 0; font-weight: 800; color: var(--accent-color); transition: transform 0.3s; }
+details[open] summary::after { transform: rotate(45deg); }
+details p { margin-top: 10px; font-size: 0.95rem; color: var(--text-body); line-height: 1.6; }
+
+/* Networks */
+#networks .card { padding-bottom: 4.5rem; } 
+.partner-section-title { font-size: 0.85rem; font-weight: 700; opacity: 0.6; margin-bottom: 15px; letter-spacing: 1px; color: var(--text-body); }
+.partner-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 10px; }
+.logo-tag { display: inline-flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.8); padding: 15px 25px; border-radius: 12px; min-height: 60px; border: 1px solid transparent; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s; }
+body.night .logo-tag { background: #FFFFFF; border-color: rgba(255,255,255,0.1); }
+.partner-img { max-height: 40px; width: auto; max-width: 100%; transition: all 0.3s ease; }
+.logo-tag:hover { transform: translateY(-3px); border-color: var(--accent-color); box-shadow: 0 10px 25px rgba(0, 122, 255, 0.2); }
+.logo-tag:hover .partner-img { filter: grayscale(0%); opacity: 1; transform: scale(1.05); }
+
+/* CTA */
+.cta-section { text-align: center; margin: 6rem 0; }
+.btn-primary { display: inline-block; background: var(--accent-color); color: #fff; padding: 20px 60px; border-radius: 50px; font-weight: 800; font-size: 1.25rem; text-decoration: none; box-shadow: 0 10px 40px rgba(0, 122, 255, 0.3); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 2px solid transparent; outline: none; backface-visibility: hidden; will-change: transform; }
+.btn-primary:hover { transform: scale(1.05); box-shadow: 0 20px 60px rgba(0, 122, 255, 0.5); background: #fff; color: var(--accent-color); border-color: var(--accent-color); }
+.cta-note { margin-top: 20px; font-weight: 600; color: var(--text-body); opacity: 0.8; }
+
+.social-links { margin-top: 30px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+.btn-secondary { display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 50px; text-decoration: none; font-size: 0.9rem; font-weight: 600; color: var(--text-body); border: 1px solid var(--text-body); opacity: 0.7; transition: all 0.3s ease; background: transparent; }
+.btn-secondary:hover { opacity: 1; background: var(--glass-bg); border-color: var(--accent-color); color: var(--accent-color); transform: translateY(-2px); }
+body.night .btn-secondary { border-color: var(--text-body); color: var(--text-main); }
+
+/* Footer */
+footer { text-align: center; padding: 2rem 1.5rem 3rem; font-size: 0.85rem; color: var(--text-body); margin-top: auto; position: relative; z-index: 2; }
+body.night footer { color: rgba(255,255,255,0.8); }
+
+/* Animations & Mobile */
+.reveal { opacity: 0; transform: translateY(40px); transition: all 1s ease-out; }
+.reveal.active { opacity: 1; transform: translateY(0); }
+
+.space-whale { position: fixed; top: 40%; left: -220px; z-index: 1; opacity: 1; pointer-events: none; transition: opacity 2.5s ease; display: flex; flex-direction: column; align-items: center; will-change: transform; }
+body.night .space-whale { opacity: 0.5; animation: whaleFlowAcross 40s linear infinite; }
+.whale-img { width: 90px; height: auto; transform: scaleX(1); filter: drop-shadow(0 0 15px rgba(164, 200, 225, 0.4)); }
+@keyframes whaleFlowAcross {
+  0% { transform: translateX(0) translateY(-20px) rotate(0deg); }
+  25% { transform: translateX(30vw) translateY(30px) rotate(20deg); }
+  50% { transform: translateX(60vw) translateY(60px) rotate(-5deg); }
+  75% { transform: translateX(90vw) translateY(30px) rotate(10deg); }
+  100% { transform: translateX(150vw) translateY(0) rotate(5deg); }
+}
+
+@media (max-width: 768px) {
+  header { padding-top: 6rem; } h1 { font-size: 2.2rem; } .city-bg { height: 30vh; } nav { display: none; }
+  .card { padding: 1.5rem; } .btn-primary { padding: 15px 40px; font-size: 1.1rem; } section { margin-bottom: 5rem; }
+  .location-container { grid-template-columns: 1fr; } .map-frame { height: 250px; }
+  .app-timeline-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .app-timeline-container::before { display: none; } .step-circle { margin-bottom: 10px; }
+  .timeline-item { gap: 20px; }
+  .control-btn { width: 40px; height: 40px; right: 15px; }
+  #theme-toggle { top: 15px; } #music-toggle { top: 65px; }
+}
+</style>
+</head>
+
+<body>
+
+  <button id="theme-toggle" class="control-btn" aria-label="Toggle Dark Mode">☀️</button>
+  <button id="music-toggle" class="control-btn" aria-label="Toggle Music">🔈</button>
+
+  <audio id="bg-music" loop>
+      <source src="bg-music.mp3" type="audio/mpeg">
+  </audio>
+
+  <nav>
+    <a href="#about">About</a>
+    <a href="#speakers">Speakers</a>
+    <a href="#agenda">Agenda</a>
+    <a href="#location">Venue</a>
+    <a href="#recap">Recap</a>
+    <a href="#networks">Networks</a>
+  </nav>
+
+  <div class="city-bg" id="cityLayer">
+    <svg viewBox="0 0 1440 320" preserveAspectRatio="none"><path d="M0,320 L0,200 L40,200 L40,240 L80,240 L80,120 L100,100 L120,120 L120,260 L160,260 L160,80 L200,80 L200,220 L240,220 L240,150 L280,150 L280,280 L320,280 L320,180 L360,180 L360,250 L400,250 L400,60 L440,60 L440,20 L460,10 L480,20 L480,230 L520,230 L520,140 L560,140 L560,270 L600,270 L600,100 L640,100 L640,200 L680,200 L680,50 L720,50 L720,240 L760,240 L760,160 L800,160 L800,280 L840,280 L840,90 L880,90 L880,220 L920,220 L920,130 L960,130 L960,260 L1000,260 L1000,40 L1040,40 L1040,180 L1080,180 L1080,250 L1120,250 L1120,110 L1160,110 L1160,230 L1200,230 L1200,170 L1240,170 L1240,270 L1280,270 L1280,80 L1320,80 L1320,200 L1360,200 L1360,140 L1400,140 L1400,290 L1440,290 L1440,320 Z"></path></svg>
+  </div>
+
+  <div class="space-whale">
+    <img src="https://i.postimg.cc/gkT6MJ2r/scu25.png" alt="52 Hz Whale" class="whale-img">
+  </div>
+
+  <header class="reveal">
+    <img src="https://i.postimg.cc/D0JVv8Qm/scu24.png" alt="SCU Logo" class="main-logo">
+    <h1>SCU CHAPTER 3</h1>
+    <p class="sub-headline">Foundation to Organizational Structure<br>- The Architecture of Success -</p>
+    <div class="event-info">
+      <div class="badge">📅 Sat, 28 Feb 2026</div>
+      <div class="badge">📍 TK Park, CentralWorld</div>
+      <div class="badge">⏰ 12:30 – 5:30 PM </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section id="about" class="reveal">
+      <div class="card about-card">
+        <h2>Discover Chapter 3</h2>
+        <p class="about-desc">
+          <strong>SCU Chapter 3</strong> is a curated learning and networking experience for university students, organizational leaders, and future entrepreneurs. 
+          We explore the intricate balance of <strong>People, Incentives, and Culture</strong>—the vital foundation every organization needs before it can scale sustainably.
+        </p>
+      </div>
+    </section>
+
+    <section id="concept" class="reveal">
+      <h2 class="section-title">What You Will Learn</h2>
+      <div class="pillars-grid">
+        <div class="card">
+          <h3>🏗️ Organizational Architecture</h3>
+          <p>Designing structures for clarity, efficiency, and long-term success. Learn how to build systems that support growth without chaos.</p>
+        </div>
+        <div class="card">
+          <h3>👥 The Power of People</h3>
+          <p>Aligning incentives with corporate culture. Understand human behavior to drive performance and engagement.</p>
+        </div>
+        <div class="card">
+          <h3>🌱 Sustainable Foundation</h3>
+          <p>Building the systems every business needs. Focus on the core mechanics that make an organization resilient.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="speakers" class="reveal">
+      <h2 class="section-title">Featured Speakers</h2>
+      <p style="text-align:center; color:var(--text-body); margin-bottom:30px;">Meet the industry leaders shaping the future of organizations.</p>
+      <div class="speakers-grid">
+        <div class="card speaker-card">
+          <div class="speaker-img-placeholder"><i class="fas fa-user-secret"></i></div>
+          <div class="speaker-name">To Be Announced</div>
+          <div class="speaker-role">Top-tier Executive</div>
+        </div>
+        <div class="card speaker-card">
+          <div class="speaker-img-placeholder"><i class="fas fa-lightbulb"></i></div>
+          <div class="speaker-name">To Be Announced</div>
+          <div class="speaker-role">Startup Founder</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="agenda" class="reveal">
+      <h2 class="section-title">Event Agenda</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time-marker">12:30</div>
+          <div class="event-detail"><h4>Registration Open</h4><p>Check-in and get ready.</p></div>
+        </div>
+        <div class="timeline-item">
+          <div class="time-marker">13:00</div>
+          <div class="event-detail"><h4>Opening Remarks & Ice-Breaking Activity</h4><p>Welcome session and activities to get to know fellow participants.</p></div>
+        </div>
+        <div class="timeline-item">
+          <div class="time-marker">13:30</div>
+          <div class="event-detail"><h4>Keynote Talk</h4><p><strong>Topic :</strong> How to Build a Strong Organizational Structure</p></div>
+        </div>
+        <div class="timeline-item">
+          <div class="time-marker">14:45</div>
+          <div class="event-detail"><h4>Fireside Chat</h4><p>Deep dive into <strong>People, Incentives, and Culture</strong> with industry experts.</p></div>
+        </div>
+        <div class="timeline-item">
+          <div class="time-marker">15:45</div>
+          <div class="event-detail"><h4>Collaborative Workshop</h4><p><strong>"Build Your Own Org Structure"</strong> - Hands-on session to apply what you've learned.</p></div>
+        </div>
+        <div class="timeline-item">
+          <div class="time-marker">16:30</div>
+          <div class="event-detail"><h4>Closing Remarks & Club Showcases</h4><p>Wrap up key takeaways and see showcases from organizational partners.</p></div>
+        </div>
+        <div class="timeline-item">
+          <div class="time-marker">17:00</div>
+          <div class="event-detail"><h4>Networking Party</h4><p>Connect with peers, guest speakers, and future partners.</p></div>
+        </div>
+      </div>
+      <p class="agenda-note">- Agenda is subject to change. -</p>
+    </section>
+
+    <section id="location" class="reveal">
+      <h2 class="section-title">Venue</h2>
+      <div class="card">
+        <div class="location-container">
+          <div class="location-info">
+            <h3 style="margin-bottom:10px;">TK Park, Central World</h3>
+            <p><strong>Address :</strong> 8th Floor, Dazzle Zone, CentralWorld, Bangkok</p>
+            <p>Join us at the heart of Bangkok. A creative learning space designed for connection and inspiration.</p>
+            <br>
+            <p style="font-size:0.9rem; color:var(--text-body);">
+              🚆 <strong>BTS :</strong> Chidlom / Siam Station<br>
+              🚗 <strong>Parking :</strong> Available at Central World
+            </p>
+            <a href="https://maps.app.goo.gl/VeWA8c4tQu4mKJdv5" target="_blank" style="color:var(--accent-color); font-weight:700; text-decoration:none; display:inline-block; margin-top:10px;">View on Google Maps →</a>
+          </div>
+          <div class="map-frame">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3875.5286583255547!2d100.53566507485584!3d13.746962286644408!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29ecfe7e2048b%3A0x70c06d7f845c6e1e!2sTK%20Park%2C%20Thailand%20Knowledge%20Park!5e0!3m2!1sen!2sth!4v1766406024904!5m2!1sen!2sth" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="recap" class="reveal">
+        <h2 class="section-title">Previous Chapters</h2>
+        <div class="recap-grid">
+            <div class="card">
+                <div class="slider-container" id="slider-ch1">
+                    <img src="https://i.postimg.cc/fW5K66zz/LINE-ALBUM-101166-251221-2.jpg" class="slide active" alt="CH1 Slide 1">
+                    <img src="https://i.postimg.cc/CLPcf99F/LINE-ALBUM-101166-251221-1.jpg" class="slide" alt="CH1 Slide 2">
+                    <img src="https://i.postimg.cc/650G876m/LINE-ALBUM-101166-251222-2.jpg" class="slide" alt="CH1 Slide 3">
+                    <img src="https://i.postimg.cc/B69vYsQH/LINE-ALBUM-101166-251222-1.jpg" class="slide" alt="CH1 Slide 4">
+                    <button class="nav-btn prev" onclick="moveSlide('ch1', -1)">❮</button>
+                    <button class="nav-btn next" onclick="moveSlide('ch1', 1)">❯</button>
+                </div>
+                <h3>Chapter 1 : Social Connections University Unit</h3>
+                <div class="recap-stats">
+                    <span class="stat-badge"><i class="fas fa-users"></i> 39 Participants</span>
+                    <span class="stat-badge"><i class="fas fa-university"></i> 10 Universities</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="slider-container" id="slider-ch2">
+                    <img src="https://i.postimg.cc/L8g3g5zb/DSCF2931.jpg" class="slide active" alt="CH2 Slide 1">
+                    <img src="https://i.postimg.cc/7ZwMc8bZ/DSCF2753.jpg" class="slide" alt="CH2 Slide 2">
+                    <img src="https://i.postimg.cc/QtTTC0VB/DSCF2598.jpg" class="slide" alt="CH2 Slide 3">
+                    <img src="https://i.postimg.cc/jqyfrgpr/DSCF2820.jpg" class="slide" alt="CH2 Slide 4">
+                    <button class="nav-btn prev" onclick="moveSlide('ch2', -1)">❮</button>
+                    <button class="nav-btn next" onclick="moveSlide('ch2', 1)">❯</button>
+                </div>
+                <h3>Chapter 2 : Navigating Your Business Journey</h3>
+                <div class="recap-stats">
+                    <span class="stat-badge"><i class="fas fa-users"></i> 67 Participants</span>
+                    <span class="stat-badge"><i class="fas fa-university"></i> 19 Universities</span>
+                    <span class="stat-badge"><i class="fas fa-handshake"></i> 9 Club Partners</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="reveal">
+      <h2 class="section-title">FAQ</h2>
+      <div class="card">
+        <details class="faq-item">
+          <summary>Who can apply for this event?</summary>
+          <p>This event is open to university students, early-stage entrepreneurs, and anyone interested in organizational structure and management. Selection is based on your application answers.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Is there any entrance fee?</summary>
+          <p>The event is free of charge for all selected participants. However, a small deposit might be required to confirm your seat (fully refunded upon attendance).</p>
+        </details>
+        <details class="faq-item">
+          <summary>What is the dress code?</summary>
+          <p>Smart Casual. Please dress comfortably but politely, as you will be meeting industry professionals.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Do I need to bring anything?</summary>
+          <p>Just bring yourself, an open mind, and a tablet or notebook for workshop activities.</p>
+        </details>
+      </div>
+    </section>
+
+    <section id="networks" class="reveal">
+      <h2 class="section-title">Strategic Networks</h2>
+      <div class="card">
+        <div style="margin-bottom: 50px; text-align: center;">
+            <p class="partner-section-title">OFFICIAL VENUE PARTNER</p>
+            <div class="partner-grid">
+              <span class="logo-tag">
+                <img src="https://i.postimg.cc/MKywv3fL/TK-Park-logo-Original.png" alt="TK Park" class="partner-img">
+              </span>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 50px; text-align: center;">
+            <p class="partner-section-title">ORGANIZATIONAL PARTNERS</p>
+            <div class="partner-grid">
+              <span class="logo-tag"><img src="kmitl.case.club.png" alt="Partner" class="partner-img"></span>
+              <span class="logo-tag"><img src="https://i.postimg.cc/QxRBrzZG/scu15.png" alt="Partner" class="partner-img"></span>
+              <span class="logo-tag"><img src="https://i.postimg.cc/QxRBrzZG/scu15.png" alt="Partner" class="partner-img"></span>
+              <span class="logo-tag"><img src="https://i.postimg.cc/QxRBrzZG/scu15.png" alt="Partner" class="partner-img"></span>
+              <span class="logo-tag"><img src="https://i.postimg.cc/QxRBrzZG/scu15.png" alt="Partner" class="partner-img"></span>
+              <span class="logo-tag"><img src="https://i.postimg.cc/QxRBrzZG/scu15.png" alt="Partner" class="partner-img"></span>
+              <span class="logo-tag"><img src="https://i.postimg.cc/QxRBrzZG/scu15.png" alt="Partner" class="partner-img"></span>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <p class="partner-section-title">OFFICIAL SPONSORS</p>
+            <div class="partner-grid">
+               <span class="logo-tag"><img src="https://i.postimg.cc/QxRBrzZG/scu15.png" alt="Partner" class="partner-img"></span>
+               <span class="logo-tag" style="min-width:150px; font-weight:600; color:var(--text-body); font-size:0.9rem;">To Be Announced</span>
+            </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="cta-section reveal">
+        <h2 style="margin-bottom:30px; font-size:2rem;">Journey to Success</h2>
+        <div class="app-timeline-wrapper" style="margin-bottom:40px;">
+             <div class="app-timeline-container" id="journeyTimeline">
+                 <div class="app-step" id="step1"><div class="step-circle">1</div><div class="step-label">Apply</div><div class="step-date">28 Jan - 20 Feb</div></div>
+                 <div class="app-step" id="step2"><div class="step-circle">2</div><div class="step-label">Select</div><div class="step-date">21 - 22 Feb</div></div>
+                 <div class="app-step" id="step3"><div class="step-circle">3</div><div class="step-label">Announce</div><div class="step-date">23 Feb</div></div>
+                 <div class="app-step" id="step4"><div class="step-circle">4</div><div class="step-label">Event Day</div><div class="step-date">28 Feb</div></div>
+             </div>
+        </div>
+
+      <h2 style="margin-bottom:30px; font-size:2rem;">Ready to Build Your Legacy?</h2>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSfbhC6dptWDATUDZGcV-f0YNTPkSB0KEpeoL-dRDUT9J_8jow/viewform" target="_blank" rel="noopener noreferrer" class="btn-primary">Apply Now!</a>
+      <p class="cta-note">Selected participants only</p>
+
+      <div class="social-links">
+        <a href="https://www.facebook.com/profile.php?id=61566546757537&locale=th_TH" target="_blank" class="btn-secondary"><i class="fab fa-facebook"></i> Facebook</a>
+        <a href="https://www.instagram.com/scu.connections?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="btn-secondary"><i class="fab fa-instagram"></i> Instagram</a>
+        <a href="https://line.me/ti/g2/6BUga2rcQZGGkFgZj9NqS31P88JGXhCGYdVB1g?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank" class="btn-secondary"><i class="fab fa-line"></i> OpenChat</a>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    © 2026 Strategic Connections Unlimited (SCU). All rights reserved.
+  </footer>
+
+  <script>
+    /* --- 1. System Setup --- */
+    const body = document.body;
+    
+    // Theme Toggle
+    const themeBtn = document.getElementById('theme-toggle');
+    themeBtn.addEventListener('click', () => {
+      body.classList.toggle('night');
+      themeBtn.textContent = body.classList.contains('night') ? '🌙' : '☀️';
+    });
+
+    // Cursor Effect
+    window.addEventListener('mousemove', (e) => {
+      document.documentElement.style.setProperty('--cursor-x', e.clientX + 'px');
+      document.documentElement.style.setProperty('--cursor-y', e.clientY + 'px');
+    });
+
+    // Scroll Animation
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('active');
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    /* --- 2. Audio Engine --- */
+    // SFX: Click Sound
+    const uiSound = new Audio('mixkit-cool-interface-click-tone-2568.wav');
+    uiSound.volume = 0.12; /* ลดระดับเสียงลงให้เป็น Background */
+    
+    function playClick() {
+        const soundClone = uiSound.cloneNode();
+        soundClone.volume = 0.12;
+        soundClone.play().catch(() => {});
+    }
+
+    // Attach SFX to all clickable elements
+    document.querySelectorAll('button, a, summary, .nav-btn').forEach(el => {
+        el.addEventListener('click', playClick);
+    });
+
+    // BGM: Background Music
+    const musicBtn = document.getElementById('music-toggle');
+    const bgMusic = document.getElementById('bg-music');
+    bgMusic.volume = 0.12; /* ตั้ง volume เบาๆ ไว้ที่ 12% */
+
+    musicBtn.addEventListener('click', () => {
+        if (bgMusic.paused) {
+            bgMusic.play().catch(e => alert("Please interact with the page first!")); 
+            musicBtn.textContent = '🎵'; 
+            musicBtn.classList.add('playing');
+        } else {
+            bgMusic.pause();
+            musicBtn.textContent = '🔈';
+            musicBtn.classList.remove('playing');
+        }
+    });
+
+    /* --- 3. Interactive Logic --- */
+    // Timeline Auto-Update (Year 2026)
+    function updateTimeline() {
+        const now = new Date();
+        const year = 2026; 
+        const d20 = new Date(year, 1, 20, 23, 59); // Feb 20
+        const d22 = new Date(year, 1, 22, 23, 59); // Feb 22
+        const d23 = new Date(year, 1, 23, 23, 59); // Feb 23
+        
+        document.querySelectorAll('.app-step').forEach(s => s.classList.remove('active'));
+        
+        if (now <= d20) document.getElementById('step1').classList.add('active');
+        else if (now <= d22) document.getElementById('step2').classList.add('active');
+        else if (now <= d23) document.getElementById('step3').classList.add('active');
+        else document.getElementById('step4').classList.add('active');
+    }
+    updateTimeline();
+
+    // Slider Logic
+    const slideIndices = { 'ch1': 0, 'ch2': 0 };
+
+    function moveSlide(id, step) {
+        const container = document.getElementById('slider-' + id);
+        const slides = container.querySelectorAll('.slide');
+        let index = slideIndices[id] + step;
+
+        if (index >= slides.length) index = 0;
+        if (index < 0) index = slides.length - 1;
+
+        slideIndices[id] = index;
+
+        slides.forEach(s => s.classList.remove('active'));
+        slides[index].classList.add('active');
+    }
+  </script>
+
+</body>
+</html>
